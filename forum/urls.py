@@ -9,8 +9,8 @@ urlpatterns = [
         name="question-details",
     ),
     re_path(
-        "^questions/(?P<question_id>\d+)answers/(?P<answer_id>\d+)$/",
-        views.QuestionDetails.as_view(),
-        name="question-details",
-    ),
+        "^questions/(?P<question_id>\d+)/answer/(?P<answer_id>\d+)/$",
+        views.AnswerDetail.as_view(),
+        name="answer-detail"
+    )
 ]

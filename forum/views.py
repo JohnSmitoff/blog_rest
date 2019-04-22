@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from rest_framework.views import APIView
 from .models import Question, Answer
-from .serializers import QuestionSerializer
+from .serializers import QuestionSerializer, AnswerSerializer
 from rest_framework.response import Response
 from rest_framework import status
 from django.http import Http404
@@ -50,3 +50,32 @@ class QuestionDetails(APIView):
         question = self.get_object(pk=question_id)
         question.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class AnswerDetail(APIView):
+    @staticmethod
+    def get_object(pk):
+        try:
+            answer = Answer.objects.get(pk=pk)
+            return answer
+        except Answer.DoesNotExist:
+            raise Http404
+
+    def get(self, request, question_id,  answer_id):
+        full_request_url = request.build_absolute_uri()
+        if "dislike" in full_request_url:
+            answer = self.get_object(pk=answer_id)
+            answer.dislikes += 1
+            answer.save()
+            serializer = AnswerSerializer(answer)
+            return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
+        elif "like" in full_request_url:
+            answer = self.get_object(pk=answer_id)
+            answer.likes += 1
+            answer.save()
+            serializer = AnswerSerializer(answer)
+            return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
+        else:
+            answer = self.get_object(pk=answer_id)
+            serializer = AnswerSerializer(answer)
+            return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
