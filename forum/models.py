@@ -18,7 +18,9 @@ class Answer(models.Model):
     likes = models.PositiveIntegerField(default=0)
     dislikes = models.PositiveIntegerField(default=0)
     answer_time = models.TimeField()
-    question = models.ForeignKey(Question, on_delete=models.CASCADE)
+    question = models.ForeignKey(
+        Question, on_delete=models.CASCADE, related_name="answers"
+    )
 
     def __str__(self):
         return f"{self.author} answered - {self.content} | {self.question} | likes:{self.likes} dislikes:{self.dislikes}"
